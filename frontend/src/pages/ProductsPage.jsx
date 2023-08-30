@@ -1,0 +1,199 @@
+// // import React, { useEffect, useState } from "react";
+// // import { useSelector } from "react-redux";
+// // import { useSearchParams } from "react-router-dom";
+// // import Footer from "../components/Layout/Footer";
+// // import Header from "../components/Layout/Header";
+// // import Loader from "../components/Layout/Loader";
+// // import ProductCard from "../components/Route/ProductCard/ProductCard";
+// // import styles from "../styles/styles";
+
+// // const ProductsPage = () => {
+// //   const [searchParams] = useSearchParams();
+// //   const categoryData = searchParams.get("category");
+// //   const {allProducts,isLoading} = useSelector((state) => state.products);
+// //   const [data, setData] = useState([]);
+
+// //   useEffect(() => {
+// //     if (categoryData === null) {
+// //       const d = allProducts;
+// //       setData(d);
+// //     } else {
+// //       const d =
+// //       allProducts && allProducts.filter((i) => i.category === categoryData);
+// //       setData(d);
+// //     }
+// //     //    window.scrollTo(0,0);
+// //   }, [allProducts]);
+
+// //   return (
+// //   <>
+// //   {
+// //     isLoading ? (
+// //       <Loader />
+// //     ) : (
+// //       <div>
+// //       <Header activeHeading={3} />
+// //       <br />
+// //       <br />
+// //       <div className={`${styles.section}`}>
+// //         <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+// //           {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
+// //         </div>
+// //         {data && data.length === 0 ? (
+// //           <h1 className="text-center w-full pb-[100px] text-[20px]">
+// //             No products Found!
+// //           </h1>
+// //         ) : null}
+// //       </div>
+// //       <Footer />
+// //     </div>
+// //     )
+// //   }
+// //   </>
+// //   );
+// // };
+
+// // export default ProductsPage;
+
+// import React, { useEffect, useState } from "react";
+// import { useSelector } from "react-redux";
+// import { useSearchParams } from "react-router-dom";
+// import Footer from "../components/Layout/Footer";
+// import Header from "../components/Layout/Header";
+// import Loader from "../components/Layout/Loader";
+// import ProductCard from "../components/Route/ProductCard/ProductCard";
+// import styles from "../styles/styles";
+
+// const ProductsPage = () => {
+//   const [searchParams] = useSearchParams();
+//   const categoryData = searchParams.get("category");
+//   const {allProducts,isLoading} = useSelector((state) => state.products);
+//   const [data, setData] = useState([]);
+
+//   useEffect(() => {
+//     if (categoryData === null) {
+//       const d = allProducts;
+//       setData(d);
+//     } else {
+//       const d =
+//       allProducts && allProducts.filter((i) => i.category === categoryData);
+//       setData(d);
+//     }
+//     //    window.scrollTo(0,0);
+//   }, [allProducts]);
+
+//   const recommendedProductIds = [2, 4, 5];
+//   return (
+//   <>
+//   {
+//     isLoading ? (
+//       <Loader />
+//     ) : (
+//       <div>
+//       <Header activeHeading={3} />
+//       <br />
+//       <br />
+//       <div className={`${styles.section}`}>
+//         <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+//           {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
+//         </div>
+//         {data && data.length === 0 ? (
+//           <h1 className="text-center w-full pb-[100px] text-[20px]">
+//             No products Found!
+//           </h1>
+//         ) : null}
+//       </div>
+//       {/* Conditionally render personalized recommendations */}
+//       {data && recommendedProductIds.some(id => data.some(product => product.id === id)) && (
+//               <div>
+//                 {/* Insert your personalized recommendation component here */}
+//                 <h2>Personalized Recommendations</h2>
+//                 {/* ... Your recommendation component */}
+//               </div>
+//             )}
+//             <Footer />
+//           </div>
+//         )
+//       }
+//     </>
+//   );
+// };
+
+// export default ProductsPage;
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import Footer from "../components/Layout/Footer";
+import Header from "../components/Layout/Header";
+import Loader from "../components/Layout/Loader";
+import ProductCard from "../components/Route/ProductCard/ProductCard";
+import HotelBookingContent from "../components/HotelBookingContent"; // Import the contents of the HotelBooking page
+import styles from "../styles/styles";
+
+const ProductsPage = () => {
+  const [searchParams] = useSearchParams();
+  const categoryData = searchParams.get("category");
+  const { allProducts, isLoading } = useSelector((state) => state.products);
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  const [showHotelBookingContent, setShowHotelBookingContent] = useState(false);
+
+  useEffect(() => {
+    if (categoryData === null) {
+      setData(allProducts);
+    } else {
+      const filteredProducts =
+        allProducts && allProducts.filter((product) => product.category === categoryData);
+      setData(filteredProducts);
+
+      if (categoryData === "6") {
+        setShowHotelBookingContent(true);
+      } else {
+        setShowHotelBookingContent(false);
+      }
+    }
+  }, [allProducts, categoryData]);
+
+  const recommendedProductIds = [2, 4, 5];
+
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div>
+          <Header activeHeading={3} />
+          <br />
+          <br />
+          {showHotelBookingContent ? (
+            // Display HotelBookingContent if showHotelBookingContent is true
+            <HotelBookingContent />
+          ) : (
+            <div className={`${styles.section}`}>
+              <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+                {data && data.map((product, index) => <ProductCard data={product} key={index} />)}
+              </div>
+              {data && data.length === 0 ? (
+                <h1 className="text-center w-full pb-[100px] text-[20px]">
+                  No products Found!
+                </h1>
+              ) : null}
+            </div>
+          )}
+          {data &&
+            recommendedProductIds.some((id) =>
+              data.some((product) => product.id === id)
+            ) && (
+              <div>
+                <h2>Personalized Recommendations</h2>
+                {/* ... Your recommendation component */}
+              </div>
+            )}
+          <Footer />
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProductsPage;
